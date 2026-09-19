@@ -39,3 +39,29 @@ export async function getUserById(req, res) {
     });
   }
 }
+
+export async function createUser(req, res) {
+  try {
+    const data = await fs.readFile(dataPath, "utf-8");
+
+    const users = JSON.parse(data);
+
+    const newUser = {
+      id: users.users.length + 1,
+      name: req.body.name
+    };
+
+    users.users.push(newUser);
+
+    await fs.writeFile(
+      dataPath,
+      JSON.stringify(users, null, 2)
+    );
+
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to create user"
+    });
+  }
+}
